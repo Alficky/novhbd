@@ -1,0 +1,420 @@
+/* ==========================================
+   1. RESET & VARIABLES
+   ========================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg-dark: #0f0a1c;
+    --card-bg: rgba(255, 255, 255, 0.05);
+    --border-color: rgba(255, 215, 0, 0.2);
+    --accent-gold: #f39c12;
+    --accent-pink: #ff758c;
+    --accent-rose: #ff7eb3;
+    --text-light: #f8f9fa;
+    --text-sub: #dcdde1;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+    font-family: 'Poppins', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+#bg-canvas, #confetti-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+#bg-canvas { z-index: 1; }
+#confetti-canvas { z-index: 99; }
+
+/* ==========================================
+   2. HALAMAN PEMBUKA (LANDING / GIFT BOX)
+   ========================================== */
+.landing-page {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    background: radial-gradient(circle, #1a0f2e 0%, #0f0a1c 100%);
+    transition: opacity 1s ease, visibility 1s ease;
+}
+
+.landing-page.fade-out {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.gift-container {
+    cursor: pointer;
+    text-align: center;
+}
+
+.gift-box {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, #ff758c, #ff7eb3);
+    border-radius: 12px;
+    box-shadow: 0 15px 35px rgba(255, 117, 140, 0.4);
+    margin: 0 auto 25px auto;
+    transition: transform 0.3s ease;
+    animation: bounce 2s infinite;
+}
+
+.gift-box:hover {
+    transform: scale(1.08);
+}
+
+.gift-box::before {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 100%;
+    background: #ffd700;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 2px;
+}
+
+.gift-box::after {
+    content: '';
+    position: absolute;
+    height: 24px;
+    width: 100%;
+    background: #ffd700;
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 2px;
+}
+
+.gift-lid {
+    position: absolute;
+    top: -15px;
+    left: -10px;
+    width: 140px;
+    height: 30px;
+    background: linear-gradient(135deg, #ff859c, #ff8ebf);
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    z-index: 2;
+    transition: transform 0.6s ease;
+}
+
+.gift-lid::before {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 100%;
+    background: #ffd700;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.gift-container.open .gift-lid {
+    transform: translateY(-80px) rotate(-20deg);
+}
+
+.gift-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    padding: 12px 28px;
+    font-size: 1.1rem;
+    border-radius: 30px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.gift-container:hover .gift-btn {
+    background: #ffd700;
+    color: #0f0a1c;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+}
+
+/* ==========================================
+   3. KONTEN UTAMA (KADO DIBUKA)
+   ========================================== */
+.main-content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 1.2s ease 0.5s, transform 1.2s ease 0.5s;
+}
+
+.main-content.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.header-section {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.hbd-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 6vw, 4.2rem);
+    background: linear-gradient(45deg, #ffd700, #ff7eb3, #ffffff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+}
+
+.name-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.4rem, 4vw, 2.2rem);
+    color: #ffffff;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.birth-date {
+    display: inline-block;
+    font-size: 1rem;
+    color: var(--accent-gold);
+    background: rgba(255, 215, 0, 0.1);
+    padding: 6px 18px;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+}
+
+.wishes-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 35px 30px;
+    margin-bottom: 40px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    line-height: 1.8;
+    font-size: 1.1rem;
+    color: var(--text-sub);
+    text-align: center;
+}
+
+.wishes-card p {
+    margin-bottom: 20px;
+}
+
+.wishes-card p:last-child {
+    margin-bottom: 0;
+}
+
+.highlight-text {
+    color: var(--accent-rose);
+    font-weight: 600;
+}
+
+.pkl-card {
+    background: linear-gradient(135deg, rgba(255, 117, 140, 0.1), rgba(255, 215, 0, 0.05));
+    border-left: 4px solid var(--accent-pink);
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 50px;
+}
+
+.pkl-card h3 {
+    font-family: 'Playfair Display', serif;
+    color: var(--accent-gold);
+    margin-bottom: 12px;
+    font-size: 1.3rem;
+}
+
+.pkl-card p {
+    line-height: 1.7;
+    color: var(--text-sub);
+    font-size: 1rem;
+}
+
+.gallery-section {
+    margin-bottom: 50px;
+}
+
+.section-title {
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: var(--text-light);
+    margin-bottom: 25px;
+    position: relative;
+}
+
+.section-title::after {
+    content: '';
+    display: block;
+    width: 50px;
+    height: 2px;
+    background: var(--accent-gold);
+    margin: 8px auto 0 auto;
+    border-radius: 2px;
+}
+
+.photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+}
+
+.photo-item {
+    position: relative;
+    border-radius: 15px;
+    overflow: hidden;
+    height: 250px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    transition: transform 0.4s ease;
+}
+
+.photo-item:hover {
+    transform: translateY(-8px);
+}
+
+.photo-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.photo-item:hover img {
+    transform: scale(1.08);
+}
+
+.special-message-box {
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 30px;
+}
+
+.btn-open-modal {
+    background: linear-gradient(45deg, #ff758c, #ff7eb3);
+    color: #ffffff;
+    border: none;
+    padding: 16px 35px;
+    font-size: 1.1rem;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 8px 25px rgba(255, 117, 140, 0.4);
+    transition: all 0.3s ease;
+}
+
+.btn-open-modal:hover {
+    transform: scale(1.05);
+}
+
+footer {
+    text-align: center;
+    padding: 20px 0;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.9rem;
+}
+
+/* ==========================================
+   4. MODAL / POP-UP SURAT
+   ========================================== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 10, 28, 0.85);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-card {
+    background: #18112c;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    max-width: 600px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 35px 30px;
+    position: relative;
+    transform: scale(0.8);
+    transition: transform 0.4s ease;
+}
+
+.modal-overlay.active .modal-card {
+    transform: scale(1);
+}
+
+.btn-close-modal {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: var(--text-sub);
+    font-size: 1.8rem;
+    cursor: pointer;
+}
+
+.letter-header {
+    font-family: 'Playfair Display', serif;
+    color: var(--accent-gold);
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+    padding-bottom: 10px;
+}
+
+.letter-body {
+    line-height: 1.8;
+    color: var(--text-sub);
+    font-size: 1rem;
+    text-align: left;
+}
+
+.letter-body p {
+    margin-bottom: 15px;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-15px); }
+    60% { transform: translateY(-7px); }
+}
