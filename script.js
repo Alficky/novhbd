@@ -8,14 +8,25 @@ const openModalBtn = document.getElementById('openModalBtn');
 const closeModalBtn = document.getElementById('closeModalBtn');
 const modalOverlay = document.getElementById('modalOverlay');
 
+// Memuat audio agar siap diputar di browser HP
+if (bgMusic) {
+    bgMusic.load();
+    bgMusic.volume = 1.0;
+}
+
 // Event Klik Kado
 giftContainer.addEventListener('click', function() {
     giftContainer.classList.add('open');
 
     if (bgMusic) {
-        bgMusic.play().catch(function(error) {
-            console.log("Autoplay dicegah oleh browser:", error);
-        });
+        let playPromise = bgMusic.play();
+        if (playPromise !== undefined) {
+            playPromise.then(_ => {
+                console.log("Musik berhasil diputar!");
+            }).catch(error => {
+                console.log("Autoplay dicegah oleh browser:", error);
+            });
+        }
     }
 
     triggerConfetti();
@@ -25,6 +36,17 @@ giftContainer.addEventListener('click', function() {
         mainContent.classList.add('visible');
     }, 800);
 });
+
+// Pengaman tambahan: Membuka kunci audio pada sentuhan pertama di layar manapun
+window.addEventListener('click', function unlockAudio() {
+    if (bgMusic && bgMusic.paused) {
+        bgMusic.play().then(() => {
+            window.removeEventListener('click', unlockAudio);
+        }).catch(e => {
+            console.log("Menunggu interaksi user...");
+        });
+    }
+}, { once: true });
 
 // Event Listener Modal Surat
 openModalBtn.addEventListener('click', function() {
