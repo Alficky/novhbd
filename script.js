@@ -8,6 +8,10 @@ const openModalBtn = document.getElementById('openModalBtn');
 const closeModalBtn = document.getElementById('closeModalBtn');
 const modalOverlay = document.getElementById('modalOverlay');
 
+// Tombol Musik Melayang
+const musicToggleBtn = document.getElementById('music-toggle-btn');
+let isPlaying = false;
+
 // Memuat audio agar siap diputar di browser HP
 if (bgMusic) {
     bgMusic.load();
@@ -23,6 +27,11 @@ giftContainer.addEventListener('click', function() {
         if (playPromise !== undefined) {
             playPromise.then(_ => {
                 console.log("Musik berhasil diputar!");
+                isPlaying = true;
+                if (musicToggleBtn) {
+                    musicToggleBtn.innerHTML = "🔇 Matikan Musik";
+                    musicToggleBtn.style.background = "rgba(100, 200, 100, 0.8)";
+                }
             }).catch(error => {
                 console.log("Autoplay dicegah oleh browser:", error);
             });
@@ -42,11 +51,37 @@ window.addEventListener('click', function unlockAudio() {
     if (bgMusic && bgMusic.paused) {
         bgMusic.play().then(() => {
             window.removeEventListener('click', unlockAudio);
+            isPlaying = true;
+            if (musicToggleBtn) {
+                musicToggleBtn.innerHTML = "🔇 Matikan Musik";
+                musicToggleBtn.style.background = "rgba(100, 200, 100, 0.8)";
+            }
         }).catch(e => {
             console.log("Menunggu interaksi user...");
         });
     }
 }, { once: true });
+
+// Kontrol Tombol Musik Manual
+if (musicToggleBtn && bgMusic) {
+    musicToggleBtn.addEventListener('click', function() {
+        if (isPlaying) {
+            bgMusic.pause();
+            musicToggleBtn.innerHTML = "🎵 Putar Musik";
+            musicToggleBtn.style.background = "rgba(255, 117, 140, 0.8)";
+            isPlaying = false;
+        } else {
+            bgMusic.play().then(() => {
+                musicToggleBtn.innerHTML = "🔇 Matikan Musik";
+                musicToggleBtn.style.background = "rgba(100, 200, 100, 0.8)";
+                isPlaying = true;
+            }).catch(e => {
+                console.log("Gagal memutar:", e);
+                alert("Gagal memutar musik, cek volume media HP kamu.");
+            });
+        }
+    });
+}
 
 // Event Listener Modal Surat
 openModalBtn.addEventListener('click', function() {
